@@ -21,11 +21,78 @@
       border-radius: 5px;
       text-decoration: none;
     }
+
+    @media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #f1f1f1;
+  }
+  input[type="date"] {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+    border: 1px solid #444;
+  }
+  img {
+    border-color: #555;
+  }
+  .meta {
+    color: #ccc;
+  }
+  button, a.button {
+    background: #3a8dde;
+    color: white;
+  }
+}
+
+.omer-note {
+  font-size: 0.95em;
+  margin-bottom: 1em;
+  color: #333;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omer-note {
+    color: #ccc;
+  }
+}
+
+.omer-note-dark {
+  display: none;
+  font-size: 0.95em;
+  margin-bottom: 1em;
+  color: #ccc;
+}
+
+@media (prefers-color-scheme: dark) {
+  .omer-note-dark {
+    display: block;
+  }
+}
+
+#nav-arrows {
+  margin: 10px 0;
+}
+
+#nav-arrows button {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0 15px;
+}
   </style>
 </head>
 <body>
   <h1>Today's Omer Count</h1>
+  <p class="omer-note-dark">
+    The Omer count is to be recited at night, beginning with the evening of the listed Gregorian date.
+  </p>
   <input type="date" id="datePicker">
+  <div id="nav-arrows">
+    <button id="prevDay" aria-label="Previous Day">←</button>
+    <button id="nextDay" aria-label="Next Day">→</button>
+  </div>
   <div id="output"></div>
   <div class="meta" id="hebrewDate"></div>
   <div id="actions"></div>
@@ -190,6 +257,22 @@
     document.getElementById('datePicker').addEventListener('change', e => {
       updateOutput(new Date(e.target.value));
     });
+
+    document.getElementById('prevDay').addEventListener('click', () => {
+  const picker = document.getElementById('datePicker');
+  const date = new Date(picker.value);
+  date.setDate(date.getDate() - 1);
+  picker.valueAsDate = date;
+  updateOutput(date);
+});
+
+document.getElementById('nextDay').addEventListener('click', () => {
+  const picker = document.getElementById('datePicker');
+  const date = new Date(picker.value);
+  date.setDate(date.getDate() + 1);
+  picker.valueAsDate = date;
+  updateOutput(date);
+});
   </script>
 </body>
 </html>
