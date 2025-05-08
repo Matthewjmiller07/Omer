@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Omer Count</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; max-width: 600px; margin: auto; }
+    h1 { font-size: 1.5em; }
+    input[type="date"] { margin-top: 10px; font-size: 1rem; }
+    img { max-width: 100%; margin: 20px 0; border: 1px solid #ccc; }
+    .meta { margin-top: 10px; font-size: 0.95em; color: #333; }
+    button, a.button {
+      display: inline-block;
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 1rem;
+      background: #2d72d9;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Today's Omer Count</h1>
+  <input type="date" id="datePicker">
+  <div id="output"></div>
+  <div class="meta" id="hebrewDate"></div>
+  <div id="actions"></div>
+
+  <script>
+    const base = 'images';
+    const startDates = {
+      2025: '2025-04-13', 2026: '2026-04-02', 2027: '2027-04-22', 2028: '2028-04-11',
+      2029: '2029-03-31', 2030: '2030-04-18', 2031: '2031-04-08', 2032: '2032-03-27',
+      2033: '2033-04-14', 2034: '2034-04-04', 2035: '2035-04-24', 2036: '2036-04-12',
+      2037: '2037-03-31', 2038: '2038-04-20', 2039: '2039-04-09', 2040: '2040-03-29',
+      2041: '2041-04-16', 2042: '2042-04-05', 2043: '2043-04-25', 2044: '2044-04-12',
+      2045: '2045-04-02', 2046: '2046-04-21', 2047: '2047-04-11', 2048: '2048-03-29',
+      2049: '2049-04-17', 2050: '2050-04-07', 2051: '2051-03-28', 2052: '2052-04-14',
+      2053: '2053-04-03', 2054: '2054-04-23', 2055: '2055-04-13', 2056: '2056-04-01',
+      2057: '2057-04-19', 2058: '2058-04-09', 2059: '2059-03-29', 2060: '2060-04-15',
+      2061: '2061-04-05', 2062: '2062-04-25', 2063: '2063-04-14', 2064: '2064-04-01',
+      2065: '2065-04-21', 2066: '2066-04-10', 2067: '2067-03-31', 2068: '2068-04-17',
+      2069: '2069-04-06', 2070: '2070-03-27', 2071: '2071-04-14', 2072: '2072-04-03',
+      2073: '2073-04-22', 2074: '2074-04-12', 2075: '2075-03-31', 2076: '2076-04-18',
+      2077: '2077-04-08', 2078: '2078-03-29', 2079: '2079-04-16', 2080: '2080-04-04',
+      2081: '2081-04-24', 2082: '2082-04-14', 2083: '2083-04-03', 2084: '2084-04-20',
+      2085: '2085-04-10', 2086: '2086-03-30', 2087: '2087-04-17', 2088: '2088-04-06',
+      2089: '2089-03-26', 2090: '2090-04-15', 2091: '2091-04-03', 2092: '2092-04-22',
+      2093: '2093-04-11', 2094: '2094-04-01', 2095: '2095-04-19', 2096: '2096-04-07',
+      2097: '2097-03-28', 2098: '2098-04-17', 2099: '2099-04-05', 2100: '2100-04-24',
+      2101: '2101-04-14', 2102: '2102-04-04', 2103: '2103-04-22', 2104: '2104-04-10',
+      2105: '2105-03-31', 2106: '2106-04-20', 2107: '2107-04-09', 2108: '2108-03-27',
+      2109: '2109-04-16', 2110: '2110-04-05', 2111: '2111-04-23', 2112: '2112-04-12',
+      2113: '2113-04-01', 2114: '2114-04-21', 2115: '2115-04-09', 2116: '2116-03-28',
+      2117: '2117-04-17', 2118: '2118-04-07', 2119: '2119-04-25', 2120: '2120-04-13',
+      2121: '2121-04-03', 2122: '2122-04-21', 2123: '2123-04-11', 2124: '2124-03-30',
+      2125: '2125-04-19'
+    };
+
+    async function fetchSunset(lat, lng, date) {
+      const url = `https://www.hebcal.com/zmanim?cfg=json&latitude=${lat}&longitude=${lng}&date=${date.toISOString().slice(0,10)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      return new Date(data.times.sunset);
+    }
+
+    async function fetchHebrewDate(date) {
+      const url = `https://www.hebcal.com/converter?cfg=json&gy=${date.getFullYear()}&gm=${date.getMonth()+1}&gd=${date.getDate()}&g2h=1`;
+      const res = await fetch(url);
+      const data = await res.json();
+      return `${data.hebrew} (${data.hy})`;
+    }
+
+    async function updateOutput(date) {
+      const lat = window.__userLat;
+      const lng = window.__userLng;
+      const now = new Date();
+
+      if (lat && lng) {
+        const sunset = await fetchSunset(lat, lng, date);
+        if (now >= sunset) date.setDate(date.getDate() + 1); // If after sunset, shift forward
+      }
+
+      const year = date.getFullYear();
+      const iso = date.toISOString().slice(0, 10);
+      const start = new Date(startDates[year]);
+      const diff = Math.floor((date - start) / (1000 * 60 * 60 * 24));
+
+      const output = document.getElementById('output');
+      const actions = document.getElementById('actions');
+
+      if (!start || diff < 0 || diff >= 49) {
+        output.innerHTML = "Not within the Omer count for this year.";
+        actions.innerHTML = '';
+        return;
+      }
+
+      const day = diff + 1;
+      const file = `omer_day_${day}_${iso}.png`;
+      output.innerHTML = `<img src="${base}/${file}" alt="Omer day ${day}">`;
+
+      // Hebrew Date
+      const hebrew = await fetchHebrewDate(date);
+      document.getElementById('hebrewDate').innerText = `Hebrew Date: ${hebrew}`;
+
+      // Share & Calendar
+      const shareText = `Tonight is day ${day} of the Omer (${iso})`;
+      const encoded = encodeURIComponent(shareText);
+      const calendarLink = `https://calendar.google.com/calendar/u/0/r/eventedit?text=Omer+Day+${day}&dates=${iso.replace(/-/g, '')}T200000Z/${iso.replace(/-/g, '')}T203000Z`;
+
+      actions.innerHTML = `
+        <a class="button" href="https://wa.me/?text=${encoded}" target="_blank">📤 Share on WhatsApp</a>
+        <a class="button" href="${calendarLink}" target="_blank">📅 Add to Calendar</a>
+      `;
+    }
+
+    // Setup
+    navigator.geolocation.getCurrentPosition(pos => {
+      window.__userLat = pos.coords.latitude;
+      window.__userLng = pos.coords.longitude;
+      updateOutput(new Date());
+    }, () => updateOutput(new Date()));
+
+    document.getElementById('datePicker').valueAsDate = new Date();
+    document.getElementById('datePicker').addEventListener('change', e => {
+      updateOutput(new Date(e.target.value));
+    });
+  </script>
+</body>
+</html>
