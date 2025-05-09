@@ -23,70 +23,54 @@
     }
 
     @media (prefers-color-scheme: dark) {
-  body {
-    background-color: #121212;
-    color: #f1f1f1;
-  }
-  input[type="date"] {
-    background-color: #1e1e1e;
-    color: #f1f1f1;
-    border: 1px solid #444;
-  }
-  img {
-    border-color: #555;
-  }
-  .meta {
-    color: #ccc;
-  }
-  button, a.button {
-    background: #3a8dde;
-    color: white;
-  }
-}
+      body {
+        background-color: #121212;
+        color: #f1f1f1;
+      }
+      input[type="date"] {
+        background-color: #1e1e1e;
+        color: #f1f1f1;
+        border: 1px solid #444;
+      }
+      img {
+        border-color: #555;
+      }
+      .meta {
+        color: #ccc;
+      }
+      button, a.button {
+        background: #3a8dde;
+        color: white;
+      }
+      .omer-note {
+        color: #ccc;
+      }
+    }
 
-.omer-note {
-  font-size: 0.95em;
-  margin-bottom: 1em;
-  color: #333;
-}
+    .omer-note {
+      font-size: 0.95em;
+      margin-bottom: 1em;
+      color: #333; /* Default for light mode */
+    }
 
-@media (prefers-color-scheme: dark) {
-  .omer-note {
-    color: #ccc;
-  }
-}
+    #nav-arrows {
+      margin: 10px 0;
+    }
 
-.omer-note-dark {
-  display: none;
-  font-size: 0.95em;
-  margin-bottom: 1em;
-  color: #ccc;
-}
-
-@media (prefers-color-scheme: dark) {
-  .omer-note-dark {
-    display: block;
-  }
-}
-
-#nav-arrows {
-  margin: 10px 0;
-}
-
-#nav-arrows button {
-  font-size: 1.5rem;
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  padding: 0 15px;
-}
+    #nav-arrows button {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      padding: 0 15px;
+    }
   </style>
 </head>
 <body>
   <h1>Today's Omer Count</h1>
-  <p class="omer-note-dark">
-    The Omer count is to be recited at night, beginning with the evening of the listed Gregorian date.
+  <p class="omer-note" id="omerInstructionNote">
+    Loading Omer count details...
   </p>
   <input type="date" id="datePicker">
   <div id="nav-arrows">
@@ -100,6 +84,7 @@
   <script>
     const base = 'images';
     const startDates = {
+      2024: '2024-04-23',
       2025: '2025-04-13', 2026: '2026-04-02', 2027: '2027-04-22', 2028: '2028-04-11',
       2029: '2029-03-31', 2030: '2030-04-18', 2031: '2031-04-08', 2032: '2032-03-27',
       2033: '2033-04-14', 2034: '2034-04-04', 2035: '2035-04-24', 2036: '2036-04-12',
@@ -128,151 +113,279 @@
       2125: '2125-04-19'
     };
 
-    const omerCounts = [
-    "היום יוֹם אֶחָד בָּעֹֽמֶר:",
-    "היום שְׁנֵי יָמִים בָּעֹֽמֶר:",
-    "היום שְׁלשָׁה יָמִים בָּעֹֽמֶר:",
-    "היום אַרְבָּעָה יָמִים בָּעֹֽמֶר:",
-    "היום חֲמִשָּׁה יָמִים בָּעֹֽמֶר:",
-    "היום שִׁשָּׁה יָמִים בָּעֹֽמֶר:",
-    "היום שִׁבְעָה יָמִים שֶׁהֵם שָׁבוּעַ אֶחָד בָּעֹֽמֶר:",
-    "היום שְׁמוֹנָה יָמִים שֶׁהֵם שָׁבוּעַ אֶחָד וְיוֹם אֶחָד בָּעֹֽמֶר:",
-    "היום תִּשְׁעָה יָמִים שֶׁהֵם שָׁבוּעַ אֶחָד וּשְׁנֵי יָמִים בָּעֹֽמֶר:",
-    "היום עֲשָׂרָה יָמִים שֶׁהֵם שָׁבוּעַ אֶחָד וּשְׁלוֹשָׁה יָמִים בָּעֹֽמֶר:",
-    "היום אַחַד עָשָׂר יוֹם שֶׁהֵם שָׁבוּעַ אֶחָד וְאַרְבָּעָה יָמִים בָּעֹֽמֶר:",
-    "היום שְׁנֵים עָשָׂר יוֹם שֶׁהֵם שָׁבוּעַ אֶחָד וַחֲמִשָּׁה יָמִים בָּעֹֽמֶר:",
-    "היום שְׁלשָׁה עָשָׂר יוֹם שֶׁהֵם שָׁבוּעַ אֶחָד וְשִׁשָּׁה יָמִים בָּעֹֽמֶר:",
-    "היום אַרְבָּעָה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת בָּעֹמֶר:",
-    "היום חֲמִשָּׁה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹֽמֶר:",
-    "היום שִׁשָּׁה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וּשְׁנֵי יָמִים בָּעֹֽמֶר:",
-    "היום שִׁבְעָה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹֽמֶר:",
-    "היום שְׁמוֹנָה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹֽמֶר:",
-    "היום תִּשְׁעָה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹֽמֶר:",
-    "היום עֶשְׂרִים יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹֽמֶר:",
-    "היום עֶשְׂרִים וְאֶחָד יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת בָּעֹמֶר:",
-    "היום עֶשְׂרִים וּשְׁנַיִם יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹמֶר:",
-    "היום עֶשְׂרִים וּשְׁלוֹשָׁה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וּשְׁנֵי יָמִים בָּעֹמֶר:",
-    "היום עֶשְׂרִים וְאַרְבָּעָה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹמֶר:",
-    "היום עֶשְׂרִים וַחֲמִשָּׁה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹמֶר:",
-    "היום עֶשְׂרִים וְשִׁשָּׁה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹמֶר:",
-    "היום עֶשְׂרִים וְשִׁבְעָה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹמֶר:",
-    "היום עֶשְׂרִים וּשְׁמוֹנֶה יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת בָּעֹמֶר:",
-    "היום עֶשְׂרִים וְתִשְׁעָה יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וּשְׁנֵי יָמִים בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים וְאֶחָד יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים וּשְׁנַיִם יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים וּשְׁלוֹשָׁה יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים וְאַרְבָּעָה יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים וַחֲמִשָּׁה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים וְשִׁשָּׁה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים וְשִׁבְעָה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וּשְׁנֵי יָמִים בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים וּשְׁמוֹנֶה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹמֶר:",
-    "היום שְׁלוֹשִׁים וְתִשְׁעָה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹמֶר:",
-    "היום אַרְבָּעִים יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹמֶר:",
-    "היום אַרְבָּעִים וְאֶחָד יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹמֶר:",
-    "היום אַרְבָּעִים וּשְׁנַיִם יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת בָּעֹמֶר:",
-    "היום אַרְבָּעִים וּשְׁלוֹשָׁה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹמֶר:",
-    "היום אַרְבָּעִים וְאַרְבָּעָה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וּשְׁנֵי יָמִים בָּעֹמֶר:",
-    "היום אַרְבָּעִים וַחֲמִשָּׁה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹמֶר:",
-    "היום אַרְבָּעִים וְשִׁשָּׁה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹמֶר:",
-    "היום אַרְבָּעִים וְשִׁבְעָה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹמֶר:",
-    "היום אַרְבָּעִים וּשְׁמוֹנֶה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹמֶר:",
-    "היום אַרְבָּעִים וְתִשְׁעָה יוֹם שֶׁהֵם שִׁבְעָה שָׁבוּעוֹת בָּעֹֽמֶר:"
-];
+    const omerCounts = [ // Ensure you have all 49 counts here
+        "היום יוֹם אֶחָד בָּעֹֽמֶר:", "היום שְׁנֵי יָמִים בָּעֹֽמֶר:", "היום שְׁלשָׁה יָמִים בָּעֹֽמֶר:",
+        "היום אַרְבָּעָה יָמִים בָּעֹֽמֶר:", "היום חֲמִשָּׁה יָמִים בָּעֹֽמֶר:", "היום שִׁשָּׁה יָמִים בָּעֹֽמֶר:",
+        "היום שִׁבְעָה יָמִים שֶׁהֵם שָׁבוּעַ אֶחָד בָּעֹֽמֶר:", "היום שְׁמוֹנָה יָמִים שֶׁהֵם שָׁבוּעַ אֶחָד וְיוֹם אֶחָד בָּעֹֽמֶר:",
+        "היום תִּשְׁעָה יָמִים שֶׁהֵם שָׁבוּעַ אֶחָד וּשְׁנֵי יָמִים בָּעֹֽמֶר:", "היום עֲשָׂרָה יָמִים שֶׁהֵם שָׁבוּעַ אֶחָד וּשְׁלוֹשָׁה יָמִים בָּעֹֽמֶר:",
+        "היום אַחַד עָשָׂר יוֹם שֶׁהֵם שָׁבוּעַ אֶחָד וְאַרְבָּעָה יָמִים בָּעֹֽמֶר:", "היום שְׁנֵים עָשָׂר יוֹם שֶׁהֵם שָׁבוּעַ אֶחָד וַחֲמִשָּׁה יָמִים בָּעֹֽמֶר:",
+        "היום שְׁלשָׁה עָשָׂר יוֹם שֶׁהֵם שָׁבוּעַ אֶחָד וְשִׁשָּׁה יָמִים בָּעֹֽמֶר:", "היום אַרְבָּעָה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת בָּעֹמֶר:",
+        "היום חֲמִשָּׁה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹֽמֶר:", "היום שִׁשָּׁה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וּשְׁנֵי יָמִים בָּעֹֽמֶר:",
+        "היום שִׁבְעָה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹֽמֶר:", "היום שְׁמוֹנָה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹֽמֶר:",
+        "היום תִּשְׁעָה עָשָׂר יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹֽמֶר:", "היום עֶשְׂרִים יוֹם שֶׁהֵם שְׁנֵי שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹֽמֶר:",
+        "היום עֶשְׂרִים וְאֶחָד יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת בָּעֹמֶר:", "היום עֶשְׂרִים וּשְׁנַיִם יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹמֶר:",
+        "היום עֶשְׂרִים וּשְׁלוֹשָׁה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וּשְׁנֵי יָמִים בָּעֹמֶר:", "היום עֶשְׂרִים וְאַרְבָּעָה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹמֶר:",
+        "היום עֶשְׂרִים וַחֲמִשָּׁה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹמֶר:", "היום עֶשְׂרִים וְשִׁשָּׁה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹמֶר:", // This is omerCounts[25] - Day 26
+        "היום עֶשְׂרִים וְשִׁבְעָה יוֹם שֶׁהֵם שְׁלֹשָׁה שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹמֶר:", // This is omerCounts[26] - Day 27
+        "היום עֶשְׂרִים וּשְׁמוֹנֶה יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת בָּעֹמֶר:",
+        "היום עֶשְׂרִים וְתִשְׁעָה יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹמֶר:", "היום שְׁלוֹשִׁים יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וּשְׁנֵי יָמִים בָּעֹמֶר:",
+        "היום שְׁלוֹשִׁים וְאֶחָד יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹמֶר:", "היום שְׁלוֹשִׁים וּשְׁנַיִם יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹמֶר:",
+        "היום שְׁלוֹשִׁים וּשְׁלוֹשָׁה יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹמֶר:", "היום שְׁלוֹשִׁים וְאַרְבָּעָה יוֹם שֶׁהֵם אַרְבָּעָה שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹמֶר:",
+        "היום שְׁלוֹשִׁים וַחֲמִשָּׁה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת בָּעֹמֶר:", "היום שְׁלוֹשִׁים וְשִׁשָּׁה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹמֶר:",
+        "היום שְׁלוֹשִׁים וְשִׁבְעָה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וּשְׁנֵי יָמִים בָּעֹמֶר:", "היום שְׁלוֹשִׁים וּשְׁמוֹנֶה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹמֶר:",
+        "היום שְׁלוֹשִׁים וְתִשְׁעָה יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹמֶר:", "היום אַרְבָּעִים יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹמֶר:",
+        "היום אַרְבָּעִים וְאֶחָד יוֹם שֶׁהֵם חֲמִשָּׁה שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹמֶר:", "היום אַרְבָּעִים וּשְׁנַיִם יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת בָּעֹמֶר:",
+        "היום אַרְבָּעִים וּשְׁלוֹשָׁה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וְיוֹם אֶחָד בָּעֹמֶר:", "היום אַרְבָּעִים וְאַרְבָּעָה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וּשְׁנֵي יָמִים בָּעֹמֶר:",
+        "היום אַרְבָּעִים וַחֲמִשָּׁה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וּשְׁלוֹשָׁה יָמִים בָּעֹמֶר:", "היום אַרְבָּעִים וְשִׁשָּׁה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וְאַרְבָּעָה יָמִים בָּעֹמֶר:",
+        "היום אַרְבָּעִים וְשִׁבְעָה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וַחֲמִשָּׁה יָמִים בָּעֹמֶר:", "היום אַרְבָּעִים וּשְׁמוֹנֶה יוֹם שֶׁהֵם שִׁשָּׁה שָׁבוּעוֹת וְשִׁשָּׁה יָמִים בָּעֹמֶר:",
+        "היום אַרְבָּעִים וְתִשְׁעָה יוֹם שֶׁהֵם שִׁבְעָה שָׁבוּעוֹת בָּעֹֽמֶר:"
+    ];
 
     async function fetchSunset(lat, lng, date) {
-      const url = `https://www.hebcal.com/zmanim?cfg=json&latitude=${lat}&longitude=${lng}&date=${date.toISOString().slice(0,10)}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      return new Date(data.times.sunset);
+      console.log("[LOG] fetchSunset called for date:", date.toLocaleDateString());
+      const y = date.getFullYear();
+      const m = (date.getMonth() + 1).toString().padStart(2, '0');
+      const d = date.getDate().toString().padStart(2, '0');
+      const dateString = `${y}-${m}-${d}`;
+      // Corrected Hebcal API URL
+      const url = `https://www.hebcal.com/zmanim?cfg=json&latitude=${lat}&longitude=${lng}&date=${dateString}`;
+      console.log("[LOG] fetchSunset URL:", url);
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+            console.error(`[LOG] HTTP error! status: ${res.status} for ${dateString}. Response:`, await res.text());
+            throw new Error(`HTTP error! status: ${res.status} for ${dateString}`);
+        }
+        const data = await res.json();
+        if (data.times && data.times.sunset) {
+          const sunsetDate = new Date(data.times.sunset);
+          console.log("[LOG] Sunset time fetched for " + dateString + ":", sunsetDate.toLocaleString());
+          return sunsetDate;
+        }
+        console.warn("[LOG] Sunset time not found in API response for ", dateString, data);
+        return null;
+      } catch (error) {
+        console.error("[LOG] Error fetching sunset for " + dateString + ":", error);
+        return null;
+      }
     }
 
     async function fetchHebrewDate(date) {
+      console.log("[LOG] fetchHebrewDate called for date:", date.toLocaleDateString());
       const url = `https://www.hebcal.com/converter?cfg=json&gy=${date.getFullYear()}&gm=${date.getMonth()+1}&gd=${date.getDate()}&g2h=1`;
-      const res = await fetch(url);
-      const data = await res.json();
-      return `${data.hebrew} (${data.hy})`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        return `${data.hebrew} (${data.hy})`;
+      } catch (error) {
+        console.error("[LOG] Error fetching Hebrew date:", error);
+        return "Error fetching Hebrew date";
+      }
     }
 
-    async function updateOutput(date) {
+    async function updateOutput(dateFromPickerInput) {
+      console.log("----------------------------------------");
+      console.log("[LOG] updateOutput called with dateFromPickerInput:", dateFromPickerInput.toString(), dateFromPickerInput.toLocaleString());
+
       const lat = window.__userLat;
       const lng = window.__userLng;
       const now = new Date();
-      let isAfterSunset = false;
+      console.log("[LOG] Current time (now):", now.toString(), now.toLocaleString());
+      console.log("[LOG] User lat/lng:", lat, lng);
+
+
+      const pickerDate = new Date(dateFromPickerInput.getFullYear(), dateFromPickerInput.getMonth(), dateFromPickerInput.getDate());
+      console.log("[LOG] pickerDate (normalized from input):", pickerDate.toString(), pickerDate.toLocaleString());
+
+      let isAfterSunsetOnPickerDate = false;
+      let sunsetOnPickerDateTime = null;
+      
+      let effectiveDateForCalculation = new Date(pickerDate.getTime());
+      let effectiveDateForDisplay = new Date(pickerDate.getTime());
+      console.log("[LOG] Initial effectiveDateForCalculation:", effectiveDateForCalculation.toLocaleString());
+      console.log("[LOG] Initial effectiveDateForDisplay:", effectiveDateForDisplay.toLocaleString());
+
+
+      const instructionNote = document.getElementById('omerInstructionNote');
 
       if (lat && lng) {
-        const sunset = await fetchSunset(lat, lng, date);
-        if (now >= sunset) {
-          isAfterSunset = true;
-          date.setDate(date.getDate() + 1);
+        sunsetOnPickerDateTime = await fetchSunset(lat, lng, pickerDate);
+        if (sunsetOnPickerDateTime) {
+             console.log("[LOG] Sunset for pickerDate ("+pickerDate.toLocaleDateString()+") is at:", sunsetOnPickerDateTime.toLocaleString());
+             if (now >= sunsetOnPickerDateTime) {
+                isAfterSunsetOnPickerDate = true;
+             }
+        } else {
+            console.warn("[LOG] Failed to get sunset for pickerDate. Assuming before sunset.");
+            instructionNote.innerText = `Could not fetch sunset time for ${pickerDate.toLocaleDateString()}. Assuming before sunset.`;
         }
+      } else {
+        console.warn("[LOG] No lat/lng. Assuming before sunset.");
+        instructionNote.innerText = "Location not available. Assuming before sunset for selected date.";
       }
+      console.log("[LOG] isAfterSunsetOnPickerDate:", isAfterSunsetOnPickerDate);
 
-      const year = date.getFullYear();
-      const iso = date.toISOString().slice(0, 10);
-      const start = new Date(startDates[year]);
-      const diff = Math.floor((date - start) / (1000 * 60 * 60 * 24));
+
+      if (isAfterSunsetOnPickerDate) {
+        console.log("[LOG] Branch: isAfterSunsetOnPickerDate is TRUE.");
+        instructionNote.innerText = `It's after sunset on ${pickerDate.toLocaleDateString()}. Displaying the Omer count for this evening.`;
+      } else {
+        console.log("[LOG] Branch: isAfterSunsetOnPickerDate is FALSE.");
+        effectiveDateForCalculation.setDate(effectiveDateForCalculation.getDate() - 1);
+        effectiveDateForDisplay.setDate(effectiveDateForDisplay.getDate() - 1);
+        instructionNote.innerText = `It's before sunset on ${pickerDate.toLocaleDateString()}. Displaying Omer count from last night (${effectiveDateForDisplay.toLocaleDateString()}).`;
+      }
+      console.log("[LOG] Final effectiveDateForCalculation:", effectiveDateForCalculation.toLocaleString());
+      console.log("[LOG] Final effectiveDateForDisplay:", effectiveDateForDisplay.toLocaleString());
+      
+      const year = effectiveDateForCalculation.getFullYear();
+      const omerStartDateString = startDates[year];
+      console.log("[LOG] Year for Omer calculation:", year);
+      console.log("[LOG] omerStartDateString for year " + year + ":", omerStartDateString);
+
 
       const output = document.getElementById('output');
       const actions = document.getElementById('actions');
+      const hebrewDateEl = document.getElementById('hebrewDate');
 
-      if (!start || diff < 0 || diff >= 49) {
-        output.innerHTML = "Not within the Omer count for this year.";
+      if (!omerStartDateString) {
+        console.error("[LOG] Omer start date not defined for year:", year);
+        output.innerHTML = `Omer start date not defined for ${year}.`;
         actions.innerHTML = '';
+        hebrewDateEl.innerText = `Picker: ${pickerDate.toLocaleDateString()}, Effective Calculation: ${effectiveDateForCalculation.toLocaleDateString()}`;
         return;
       }
 
-      const day = diff + 1;
-      const file = `omer_day_${day}_${iso}.png`;
-      output.innerHTML = `<img src="${base}/${file}" alt="Omer day ${day}">`;
+      // ***** THE FIX IS HERE *****
+      const parts = omerStartDateString.split('-'); // e.g., "2025-04-13" -> ["2025", "04", "13"]
+      const startYear = parseInt(parts[0], 10);
+      const startMonth = parseInt(parts[1], 10) - 1; // JavaScript months are 0-indexed (0=Jan, 1=Feb, etc.)
+      const startDay = parseInt(parts[2], 10);
+      const startOmerDateObj = new Date(startYear, startMonth, startDay); 
+      // new Date(Y, M, D) creates a date at local midnight.
+      // For explicit clarity, though redundant if using new Date(Y,M,D) which gives local midnight:
+      // startOmerDateObj.setHours(0,0,0,0); 
+      // ***************************
+      console.log("[LOG] startOmerDateObj (corrected parsing, should be local midnight of omerStartDateString):", startOmerDateObj.toLocaleString(), startOmerDateObj.toUTCString());
 
-      const hebrew = await fetchHebrewDate(date);
-      document.getElementById('hebrewDate').innerText = `Hebrew Date: ${hebrew}`;
 
-      const countText = omerCounts[day - 1];
-      let shareText = '';
+      let tempCalcDate = new Date(effectiveDateForCalculation.getTime());
+      tempCalcDate.setHours(0,0,0,0); // Normalize to local midnight
+      console.log("[LOG] tempCalcDate (for diff, normalized effectiveDateForCalculation):", tempCalcDate.toLocaleString(), tempCalcDate.toUTCString());
 
-      if (!isAfterSunset) {
-        shareText = `Today is day ${day} of the Omer and there is still time to count without a bracha.\n\n${countText}`;
+
+      const diffMilliseconds = tempCalcDate.getTime() - startOmerDateObj.getTime();
+      console.log("[LOG] Milliseconds diff for Omer day:", diffMilliseconds);
+      const diff = Math.floor(diffMilliseconds / (1000 * 60 * 60 * 24));
+      console.log("[LOG] diff (days):", diff);
+      const dayOfOmer = diff + 1;
+      console.log("[LOG] dayOfOmer:", dayOfOmer);
+
+
+      if (dayOfOmer < 1 || dayOfOmer > 49) {
+        console.warn("[LOG] Calculated dayOfOmer ("+dayOfOmer+") is out of range.");
+        output.innerHTML = `Not within the Omer count period for ${effectiveDateForDisplay.toLocaleDateString()}. (Calculated Day ${dayOfOmer})`;
+        actions.innerHTML = '';
+        hebrewDateEl.innerText = `Picker: ${pickerDate.toLocaleDateString()}, Effective Display: ${effectiveDateForDisplay.toLocaleDateString()}`;
+        return;
+      }
+
+      const gregorianDateForImageISO = effectiveDateForDisplay.toISOString().slice(0, 10);
+      const file = `${base}/omer_day_${dayOfOmer}_${gregorianDateForImageISO}.png`;
+      console.log("[LOG] Image file:", file);
+      output.innerHTML = `<img src="${file}" alt="Omer day ${dayOfOmer} - counted on evening of ${gregorianDateForImageISO}">`;
+
+      const hebrew = await fetchHebrewDate(effectiveDateForDisplay);
+      hebrewDateEl.innerText = `Hebrew Date (for count beginning evening of ${gregorianDateForImageISO}): ${hebrew}`;
+
+      const countText = omerCounts[dayOfOmer - 1];
+      if (!countText) {
+          console.error("[LOG] Omer count text not found for dayOfOmer:", dayOfOmer, "(omerCounts index " + (dayOfOmer - 1) + ")");
       } else {
-        shareText = `The time to count the Omer has come!\n\nבָּרוּךְ אַתָּה יְהֹוָה אֱלֺהֵֽינוּ מֶֽלֶךְ הָעוֹלָם אֲשֶׁר קִדְּשָֽׁנוּ בְּמִצְוֹתָיו וְצִוּנוּ עַל סְפִירַת הָעֹֽמֶר\n\n${countText}\n\nהָרַחֲמָן הוּא יַחֲזִיר לָנוּ עֲבוֹדַת בֵּית הַמִּקְדָּשׁ לִמְקוֹמָה בִּמְהֵרָה בְּיָמֵֽינוּ אָמֵן סֶֽלָה:`;
+          console.log("[LOG] Omer count text for day " + dayOfOmer + ":", countText);
+      }
+
+
+      let shareText = '';
+      if (!isAfterSunsetOnPickerDate) {
+        shareText = `On ${pickerDate.toLocaleDateString()}, we show day ${dayOfOmer} of the Omer (counted evening of ${gregorianDateForImageISO}). If you haven't counted for ${gregorianDateForImageISO}, you can still count without a bracha until sunset of ${pickerDate.toLocaleDateString()}.\n\n${countText}`;
+      } else {
+        shareText = `The time to count the Omer for ${pickerDate.toLocaleDateString()} (Day ${dayOfOmer}) has come!\n\nבָּרוּךְ אַתָּה יְהֹוָה אֱלֺהֵֽינוּ מֶֽלֶךְ הָעוֹלָם אֲשֶׁר קִדְּשָֽׁנוּ בְּמִצְוֹתָיו וְצִוּנוּ עַל סְפִירַת הָעֹֽמֶר\n\n${countText}\n\nהָרַחֲמָן הוּא יַחֲזִיר לָנוּ עֲבוֹדַת בֵּית הַמִּקְדָּשׁ לִמְקוֹמָה בִּמְהֵרָה בְּיָמֵֽינוּ אָמֵן סֶֽלָה:`;
       }
 
       const encoded = encodeURIComponent(shareText);
-      const calendarLink = `https://calendar.google.com/calendar/u/0/r/eventedit?text=Omer+Day+${day}&dates=${iso.replace(/-/g, '')}T200000Z/${iso.replace(/-/g, '')}T203000Z`;
+      const calendarIsoDate = effectiveDateForDisplay.toISOString().slice(0,10).replace(/-/g, '');
+      const calendarLink = `https://calendar.google.com/calendar/u/0/r/eventedit?text=Omer+Day+${dayOfOmer}&dates=${calendarIsoDate}T200000Z/${calendarIsoDate}T203000Z`;
 
       actions.innerHTML = `
+        <p style="font-size:1.2em; font-weight:bold;">${countText || `Day ${dayOfOmer} text missing`}</p>
         <a class="button" href="https://wa.me/?text=${encoded}" target="_blank">📤 Share on WhatsApp</a>
         <a class="button" href="${calendarLink}" target="_blank">📅 Add to Calendar</a>
       `;
+      console.log("----------------------------------------");
+    }
+    function initializePage() {
+        console.log("[LOG] initializePage called");
+        const today = new Date();
+        const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        console.log("[LOG] Initializing with date:", todayDateOnly.toLocaleString());
+        document.getElementById('datePicker').valueAsDate = todayDateOnly; // This sets it as YYYY-MM-DD for UTC midnight
+
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                console.log("[LOG] Geolocation success:", pos.coords);
+                window.__userLat = pos.coords.latitude;
+                window.__userLng = pos.coords.longitude;
+                updateOutput(todayDateOnly);
+            },
+            err => {
+                console.warn("[LOG] Geolocation failed or denied:", err.message);
+                window.__userLat = null;
+                window.__userLng = null;
+                updateOutput(todayDateOnly);
+            },
+            { timeout: 10000 }
+        );
+    }
+    
+    function getLocalDateFromPicker(pickerValueAsDate) {
+        // pickerValueAsDate is a Date object representing midnight UTC on the selected date.
+        // We want a Date object representing midnight in the local timezone.
+        const localDate = new Date(pickerValueAsDate.getUTCFullYear(), pickerValueAsDate.getUTCMonth(), pickerValueAsDate.getUTCDate());
+        console.log("[LOG] getLocalDateFromPicker: input(UTC midnight):", pickerValueAsDate.toUTCString(), "output(local midnight):", localDate.toLocaleString());
+        return localDate;
     }
 
-    navigator.geolocation.getCurrentPosition(pos => {
-      window.__userLat = pos.coords.latitude;
-      window.__userLng = pos.coords.longitude;
-      updateOutput(new Date());
-    }, () => updateOutput(new Date()));
-
-    document.getElementById('datePicker').valueAsDate = new Date();
     document.getElementById('datePicker').addEventListener('change', e => {
-      updateOutput(new Date(e.target.value));
+      console.log("[LOG] Date picker changed. valueAsDate:", e.target.valueAsDate.toISOString());
+      const localPickedDate = getLocalDateFromPicker(e.target.valueAsDate);
+      updateOutput(localPickedDate);
     });
 
     document.getElementById('prevDay').addEventListener('click', () => {
-  const picker = document.getElementById('datePicker');
-  const date = new Date(picker.value);
-  date.setDate(date.getDate() - 1);
-  picker.valueAsDate = date;
-  updateOutput(date);
-});
+      console.log("[LOG] PrevDay clicked.");
+      const picker = document.getElementById('datePicker');
+      let currentDate = getLocalDateFromPicker(picker.valueAsDate);
+      currentDate.setDate(currentDate.getDate() - 1);
+      // valueAsDate expects a date that will be treated as UTC midnight for display.
+      // So convert our local date back to a UTC representation for the picker.
+      picker.valueAsDate = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()));
+      console.log("[LOG] PrevDay: new picker date (UTC for picker):", picker.valueAsDate.toISOString());
+      updateOutput(currentDate); // updateOutput works with local date
+    });
 
-document.getElementById('nextDay').addEventListener('click', () => {
-  const picker = document.getElementById('datePicker');
-  const date = new Date(picker.value);
-  date.setDate(date.getDate() + 1);
-  picker.valueAsDate = date;
-  updateOutput(date);
-});
+    document.getElementById('nextDay').addEventListener('click', () => {
+      console.log("[LOG] NextDay clicked.");
+      const picker = document.getElementById('datePicker');
+      let currentDate = getLocalDateFromPicker(picker.valueAsDate);
+      currentDate.setDate(currentDate.getDate() + 1);
+      picker.valueAsDate = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()));
+      console.log("[LOG] NextDay: new picker date (UTC for picker):", picker.valueAsDate.toISOString());
+      updateOutput(currentDate);
+    });
+
+    initializePage();
   </script>
 </body>
 </html>
