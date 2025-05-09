@@ -2,11 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Omer Count</title>
+  <title>Omer Counter with Rabbi Schachter's Approach</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 20px; max-width: 600px; margin: auto; }
-    h1 { font-size: 1.5em; }
+    body { 
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Latin Modern Roman, sans-serif; 
+      text-align: center; 
+      padding: 20px; 
+      max-width: 800px; 
+      margin: auto; 
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.8em; margin-bottom: 0.5em; }
+    h2 { font-size: 1.4em; margin-top: 1.5em; margin-bottom: 0.5em; }
+    h3 { font-size: 1.2em; margin-top: 1.2em; margin-bottom: 0.5em; }
     input[type="date"] { margin-top: 10px; font-size: 1rem; }
     img { max-width: 100%; margin: 20px 0; border: 1px solid #ccc; }
     .meta { margin-top: 10px; font-size: 0.95em; color: #333; }
@@ -21,12 +30,110 @@
       border-radius: 5px;
       text-decoration: none;
     }
-
+    
+    /* Explanation Section */
+    .explanation {
+      text-align: left;
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .talmudic-text {
+      font-family: 'David CLM', 'Times New Roman', serif;
+      direction: rtl;
+      text-align: right;
+      margin: 15px 0;
+      font-size: 1.1em;
+      line-height: 1.7;
+      background-color: #f0f4f8;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    @media (min-width: 640px) {
+      .comparison {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .counting-method {
+      background-color: #f0f4f8;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: left;
+    }
+    
+    .highlight {
+      background-color: #ffeb3b50;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    
+    .source {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 20px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+    
+    /* Counter Section */
+    .counter-section {
+      margin-bottom: 30px;
+    }
+    
+    .omer-note {
+      font-size: 0.95em;
+      margin-bottom: 1em;
+      color: #333; /* Default for light mode */
+    }
+    
+    #nav-arrows {
+      margin: 10px 0;
+    }
+    
+    #nav-arrows button {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      padding: 0 15px;
+    }
+    
+    .schachter-attribution {
+      font-style: italic;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      font-size: 0.95em;
+      color: #555;
+    }
+    
     @media (prefers-color-scheme: dark) {
       body {
         background-color: #121212;
         color: #f1f1f1;
       }
+<<<<<<< HEAD
+      .explanation {
+        background-color: #1e1e1e;
+      }
+      .talmudic-text, .counting-method {
+        background-color: #252525;
+        color: #e0e0e0;
+      }
+=======
+>>>>>>> 3c3da794c418b41583a1aacd4c82b4f0334f9d8c
       input[type="date"] {
         background-color: #1e1e1e;
         color: #f1f1f1;
@@ -42,6 +149,17 @@
         background: #3a8dde;
         color: white;
       }
+<<<<<<< HEAD
+      .omer-note, .source {
+        color: #ccc;
+      }
+      .highlight {
+        background-color: #ffd60050;
+      }
+      .schachter-attribution {
+        color: #aaa;
+      }
+=======
       .omer-note {
         color: #ccc;
       }
@@ -64,10 +182,96 @@
       color: inherit;
       cursor: pointer;
       padding: 0 15px;
+>>>>>>> 3c3da794c418b41583a1aacd4c82b4f0334f9d8c
     }
   </style>
 </head>
 <body>
+<<<<<<< HEAD
+  <h1>Counting the Omer</h1>
+  <p class="schachter-attribution">According to Rabbi Hershel Schachter's linguistic approach of <span class="talmudic-text" style="display: inline; padding: 3px;">מָר כִּי אַתְרֵיהּ</span> (each according to their place)</p>
+  
+  <div class="counter-section">
+    <p class="omer-note" id="omerInstructionNote">
+      Loading Omer count details...
+    </p>
+    <input type="date" id="datePicker">
+    <div id="nav-arrows">
+      <button id="prevDay" aria-label="Previous Day">←</button>
+      <button id="nextDay" aria-label="Next Day">→</button>
+    </div>
+    <div id="output"></div>
+    <div class="meta" id="hebrewDate"></div>
+    <div id="actions"></div>
+  </div>
+  
+  <div class="explanation">
+    <h2>Rabbi Hershel Schachter's Approach to Counting the Omer</h2>
+    
+    <p>Rabbi Hershel Schachter, a prominent <em>posek</em> and Rosh Yeshiva at Rabbi Isaac Elchanan Theological Seminary (RIETS), addresses an intriguing question regarding the proper formulation when counting the Omer. His approach is based on a Talmudic passage in Tractate Yoma that reveals how regional linguistic patterns should influence ritual declarations.</p>
+    
+    <h3>The Talmudic Background</h3>
+    
+    <p>The foundation of Rabbi Schachter's approach lies in Tractate Yoma 55a, which describes the Kohen Gadol's counting of blood sprinklings on Yom Kippur:</p>
+    
+    <div class="talmudic-text">
+      תָּנוּ רַבָּנַן: אַחַת, אַחַת וְאַחַת, אַחַת וּשְׁתַּיִם, אַחַת וְשָׁלֹשׁ, אַחַת וְאַרְבַּע, אַחַת וְחָמֵשׁ, אַחַת וָשֵׁשׁ, אַחַת וָשֶׁבַע, דִּבְרֵי רַבִּי מֵאִיר. רַבִּי יְהוּדָה אוֹמֵר: אַחַת, אַחַת וְאַחַת, שְׁתַּיִם וְאַחַת, שָׁלֹשׁ וְאַחַת, אַרְבַּע וְאַחַת, חָמֵשׁ וְאַחַת, שֵׁשׁ וְאַחַת, שֶׁבַע וְאַחַת.
+    </div>
+    
+    <p>"The Rabbis taught: [When the Kohen Gadol counts the sprinklings, he says:] 'One, one and one, one and two, one and three, one and four, one and five, one and six, one and seven.' These are the words of Rabbi Meir. Rabbi Yehuda says: [He counts:] 'One, one and one, two and one, three and one, four and one, five and one, six and one, seven and one.'"</p>
+    
+    <p>The Gemara then reconciles this apparent dispute:</p>
+    
+    <div class="talmudic-text">
+      וְלָא פְּלִיגִי: מָר כִּי אַתְרֵיהּ וּמָר כִּי אַתְרֵיהּ.
+    </div>
+    
+    <p>"And they do not disagree: one [speaks] according to [the counting convention in] his place, and one [speaks] according to [the counting convention in] his place."</p>
+    
+    <p>This resolution indicates that the difference between Rabbi Meir and Rabbi Yehuda is not a substantive disagreement about halakha, but rather reflects the different linguistic conventions of their respective regions. The formulation of the count is determined by regional counting practices and speech patterns.</p>
+    
+    <h3>The Magen Avraham's Application</h3>
+    
+    <p>Rabbi Schachter draws upon the commentary of the Magen Avraham (Rabbi Abraham Abele Gombiner, 1635-1682) on Orach Chaim 489:5, who applies this Talmudic principle to the counting of the Omer:</p>
+    
+    <div class="talmudic-text">
+      יאמר לעולם מנין המועט קודם כגון א' ועשרים יום ע' בא"ע סי' קכ"ו מיהו ביומא דף נ"ה איתא דהכל לפי מנהג המדינה בחשבונם ובמדינתינו אף בלשון חול מזכירין מנין המועט קודם
+    </div>
+    
+    <p>"One should always mention the smaller number first, such as 'one and twenty days' as seen in Even Ha'ezer 126. However, in Yoma 55a it states that everything follows the counting custom of the country, and in our country, even in secular speech, we mention the smaller number first."</p>
+    
+    <h3>Comparison of Counting Methods</h3>
+    
+    <div class="comparison">
+      <div class="counting-method">
+        <h4>Traditional Method (Smaller Number First)</h4>
+        <div class="talmudic-text">היום אֶחָד וְעֶשְׂרִים יוֹם, שֶׁהֵם שְׁלשָׁה שָׁבוּעוֹת בָּעֹֽמֶר</div>
+        <p>"Today is one and twenty days, which are three weeks of the Omer"</p>
+        <p class="note">This follows the traditional Yiddish counting style: <span class="highlight">ein un tsvantsik</span> (one and twenty)</p>
+      </div>
+      
+      <div class="counting-method">
+        <h4>Modern Convention (Larger Number First)</h4>
+        <div class="talmudic-text">היום עֶשְׂרִים וְאֶחָד יוֹם, שֶׁהֵם שְׁלשָׁה שָׁבוּעוֹת בָּעֹֽמֶר</div>
+        <p>"Today is twenty-one days, which are three weeks of the Omer"</p>
+        <p class="note">This follows modern Hebrew and English convention: <span class="highlight">עשרים ואחד</span> (twenty-one)</p>
+      </div>
+    </div>
+    
+    <h3>Rabbi Schachter's Modern Application</h3>
+    
+    <p>Rabbi Schachter observes that the linguistic convention referenced by the Magen Avraham—placing the smaller number first—was common in Yiddish, the vernacular of many Jewish communities in previous centuries. The Magen Avraham explicitly states: <span class="talmudic-text" style="display: inline; padding: 3px;">ובמדינתינו אף בלשון חול מזכירין מנין המועט קודם</span> (and in our country, even in everyday speech, we mention the smaller number first).</p>
+    
+    <p>However, contemporary language conventions in both modern Hebrew and English typically place the larger number first ("twenty-one" rather than "one and twenty"). Rabbi Schachter argues that applying the principle of <span class="talmudic-text" style="display: inline; padding: 3px;">מָר כִּי אַתְרֵיהּ</span> today would mean expressing the count as "today is twenty-one days" rather than "today is one and twenty days."</p>
+    
+    <p>According to Rabbi Schachter, this linguistic adaptation is a form of <span class="talmudic-text" style="display: inline; padding: 3px;">הידור מצוה</span> (enhancement of the commandment) based on the Talmudic principle. The appropriate formulation should be <span class="talmudic-text" style="display: inline; padding: 3px;">כפי יופי הסיגנון</span> (according to the beauty of expression) in the local vernacular.</p>
+    
+    <p>Despite the strength of Rabbi Schachter's argument, prayer books continue to use the traditional formulation with the smaller number mentioned first. This creates a tension between adherence to printed texts and the logic of adapting to contemporary linguistic norms.</p>
+    
+    <p>For practical purposes, the difference in formulation does not invalidate the counting (<span class="talmudic-text" style="display: inline; padding: 3px;">בדיעבד</span> one fulfills the obligation regardless), but there is still an ideal way (<span class="talmudic-text" style="display: inline; padding: 3px;">לכתחילה</span>) to perform the mitzvah that would align with contemporary speech patterns.</p>
+    
+    <div class="source">Based on Rabbi Hershel Schachter's teachings and rabbinic writings. Sources include Tractate Yoma 55a and Magen Avraham on Orach Chaim 489:5.</div>
+=======
   <h1>Today's Omer Count</h1>
   <p class="omer-note" id="omerInstructionNote">
     Loading Omer count details...
@@ -76,10 +280,8 @@
   <div id="nav-arrows">
     <button id="prevDay" aria-label="Previous Day">←</button>
     <button id="nextDay" aria-label="Next Day">→</button>
+>>>>>>> 3c3da794c418b41583a1aacd4c82b4f0334f9d8c
   </div>
-  <div id="output"></div>
-  <div class="meta" id="hebrewDate"></div>
-  <div id="actions"></div>
 
   <script>
     const base = 'images';
